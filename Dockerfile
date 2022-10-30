@@ -51,7 +51,7 @@ RUN pip install deep-forest==0.1.5
 ## xTea
 RUN git clone https://github.com/mikecuoco/xTea.git && \
     cd xTea && \
-    git checkout v0.1.9 && \
+    git checkout MC_cloud && \
     cd .. && \
     cp -r xTea/xtea/* .
 RUN rm -rf xTea
