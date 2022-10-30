@@ -634,6 +634,8 @@ def run_pipeline(l_rep_type, sample_id, s_wfolder):
         run_cmd(cmd)
 
 def decompress(sf_in_tar, sf_out):
+    if not os.path.isdir(sf_out):
+        os.mkdir(sf_out)
     cmd="tar -zxvf {0} -C {1}".format(sf_in_tar, sf_out)
     run_cmd(cmd)
 
@@ -785,9 +787,9 @@ if __name__ == '__main__':
     sf_folder_rep=sf_folder_rep1
     sf_ref=sf_ref1
     if options.decompress==True:
-        decompress(sf_folder_rep1, s_wfolder)
-        decompress(sf_ref1, s_wfolder)
         sf_folder_rep = s_wfolder+"rep_lib_annotation/"
+        decompress(sf_folder_rep1, sf_folder_rep)
+        decompress(sf_ref1, s_wfolder)
         sf_ref=s_wfolder+"genome.fa"
     sf_gene = s_wfolder + "gencode.annotation.gff3"
 
