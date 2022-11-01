@@ -1,10 +1,37 @@
-FROM mambaorg/micromamba:0.27.0
+FROM ubuntu:16.04
 MAINTAINER Mike Cuoco (mcuoco@ucsd.edu)
 
-COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /tmp/env.yaml
-RUN micromamba install --yes --file /tmp/env.yaml && \
-    micromamba clean --all --yes
-ARG MAMBA_DOCKERFILE_ACTIVATE=1 
+# Install dependencies
+RUN apt-get update -y && apt-get install -y \
+    bzip2 \
+    gcc \
+    git \
+    less \
+    libncurses-dev \
+    make \
+    time \
+    unzip \
+    vim \
+    wget \
+    zlib1g-dev \
+    liblz4-tool
+
+WORKDIR /usr/local/bin
+
+## conda and pysam
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh && bash Miniconda3-py38_4.10.3-Linux-x86_64.sh -p /miniconda -b
+ENV PATH=/miniconda/bin:$PATH
+RUN conda update -y conda \
+    && rm Miniconda3-py38_4.10.3-Linux-x86_64.sh
+RUN conda config --add channels r \
+    && conda config --add channels bioconda \
+    && conda install -c conda-forge libgcc-ng \
+    && conda install -c bioconda samtools==1.6 \
+    && conda install -c bioconda bwa==0.7.17 \
+    && conda install pysam==0.17.0 sortedcontainers==2.4.0 numpy==1.22.3 pandas==1.4.2 scikit-learn==1.0.2 -y
+
+## deep-forest
+RUN pip install deep-forest==0.1.5
 
 ## xTea
 USER root
@@ -16,3 +43,9 @@ RUN git clone https://github.com/mikecuoco/xTea.git && \
     cp -r xTea/xtea/* .
 RUN rm -rf xTea
 RUN chmod +x *.py
+
+## Supporting UTF-8
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+CMD ["ls /usr/local/bin"]
