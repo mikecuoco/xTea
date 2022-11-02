@@ -791,7 +791,8 @@ if __name__ == '__main__':
         decompress(sf_folder_rep1, sf_folder_rep)
         decompress(sf_ref1, s_wfolder)
         sf_ref=s_wfolder+"genome.fa"
-    sf_gene = options.gene # this is the gene annotation file
+    sf_gene = s_wfolder + "gencode.annotation.gff3"
+    os.rename(options.gene, sf_gene)
 
     i_rep_type=options.rep_type
     l_rep_type = []
