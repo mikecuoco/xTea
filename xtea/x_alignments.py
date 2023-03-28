@@ -3,7 +3,7 @@
 ##@@contact: chong.simon.chu@gmail.com
 
 import os
-import sys
+import re
 import pysam
 from x_intermediate_sites import *
 from x_reference import *
@@ -79,17 +79,8 @@ class BamInfo():#
         samfile.close()
 
         l_chrms = self.out_header['SQ']
-        m_chrms = {}
-        for record in l_chrms:
-            chrm_id = record['SN']
-            m_chrms[chrm_id] = 1
-
-        b_with_chr = False
-        if "chr1" in m_chrms:
-            b_with_chr = True
-
-        self.b_with_chr = b_with_chr
-        return b_with_chr
+        has_chr = any([True if re.match("^chr", c['SN']) else False for c in l_chrms])
+        return has_chr
 
 ####
     ###Note: hard code here, use mapping quality 20 as cutoff for anchor reads
