@@ -9,8 +9,7 @@
 ####Revision on 03/04/2019
 ####Use interval tree to replace binary search
 
-import os
-import sys
+import re
 import pysam
 import global_values
 from cmd_runner import *
@@ -48,13 +47,8 @@ class XAnnotation():
 
     def is_ref_chrm_with_chr(self, sf_ref):
         f_fa = pysam.FastaFile(sf_ref)
-        m_ref_chrms = {}
-        for tmp_chrm in f_fa.references:
-            m_ref_chrms[tmp_chrm] = 1
-        b_with_chr = False
-        if "chr1" in m_ref_chrms:
-            b_with_chr = True
-        return b_with_chr
+        has_chr = any([True if re.match("^chr",c) else False for c in f_fa.references])
+        return has_chr
 ####
 
     ##collect all the fa sequences of all the TEs
